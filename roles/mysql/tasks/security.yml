@@ -1,0 +1,16 @@
+- name: remove empty password users
+  mysql_user: name="" password="" host=localhost priv=*.*:USAGE state=absent login_user=root login_password={{ mysql.password }}
+  when: mysql.password is defined and mysql.password != ""
+  ignore_errors: True
+
+- name: remove empty password users
+  mysql_user: name="" password="" host={{ ansible_fqdn }} priv=*.*:USAGE state=absent login_user=root login_password={{ mysql.password }}
+  when: mysql.password is defined and mysql.password != ""
+  ignore_errors: True
+
+- name: remove the MySQL test database
+  mysql_db: db=test state=absent login_user=root login_password={{ mysql.password }}
+  ignore_errors: True
+
+- name: remove the MySQL preseed file
+  file: path=/root/mysql.seed state=absent

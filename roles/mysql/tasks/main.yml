@@ -1,0 +1,41 @@
+- include: password.yml
+  when: mysql.password is defined and mysql.password != ""
+
+- name: setup MySQL password file
+  template: src=root_my.cnf.j2 dest=/root/.my.cnf
+  when: mysql.password is defined and mysql.password != ""
+
+- name: install dependencies
+  apt: name=python-mysqldb state=present
+
+#- name: install MySQL PPA
+#  apt_repository: repo=ppa:ondrej/mysql-5.6 state=present
+
+- name: install MySQL packages
+  apt: name={{ item }} state=latest
+  with_items: mysql_role.packages
+
+- name: restart MySQL
+  command: service {{ mysql_role.service }} restart
+
+- name: backup configuration
+  shell: creates=/etc/mysql/my.cnf.orig cp /etc/mysql/my.cnf /etc/mysql/my.cnf.orig
+  register: result
+
+- fetch: src=/etc/mysql/my.cnf.orig dest=fetched
+  when: result|changed
+
+- name: deploy configuration
+  template: src=my.cnf.j2 dest=/etc/mysql/my.cnf owner=root mode=0644 backup=yes
+  register: result
+
+- name: restart MySQL
+  command: service {{ mysql_role.service }} restart
+
+- fetch: src=/etc/mysql/my.cnf dest=fetched
+  when: result|changed
+
+- include: security.yml
+
+- name: check service daemon
+  command: service {{ mysql_role.service }} restart

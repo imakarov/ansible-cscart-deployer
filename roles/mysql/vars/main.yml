@@ -1,0 +1,5 @@
+mysql_role:
+  service: mysql
+  packages:
+    - mysql-server
+    - mysql-client

@@ -1,0 +1,52 @@
+- stat: path=/usr/bin/redis-server
+  register: redis_bin_stat
+
+- stat: path=/etc/init.d/redis-server
+  register: redis_service_stat
+
+- name: install Redis PPA
+  apt_repository: repo=ppa:chris-lea/redis-server state=present
+  when: redis_bin_stat.stat.exists == False
+
+- name: install Redis packages
+  apt: name={{ item }} state=latest update_cache=yes
+  with_items: redis_role.packages
+  when: redis_bin_stat.stat.exists == False
+
+- name: stopped default Redis
+  service: name={{ redis_role.service }} state=stopped
+  ignore_errors: true
+  when: redis_service_stat.stat.exists == True
+  async: 30
+  poll: 0
+
+- name: remove absent service
+  file: path=/etc/init.d/{{ redis_role.service }} state=absent
+  when: redis_service_stat.stat.exists == True
+
+- name: remove useless configurations
+  file: path={{ redis_role.root }} state={{ item }}
+  with_items:
+    - "absent"
+    - "directory"
+
+- name: load configurations
+  template: src=redis.conf.j2 dest={{ redis_role.root }}/{{ item.key }}.conf mode=0644 owner=root group=root
+  with_dict: redis
+
+- name: set permissions
+  file: path={{ redis_role.root }} mode=755 owner=root group=root
+
+- name: load services
+  template: src=service.j2 dest=/etc/init.d/redis-{{ item.key }} mode=0755 owner=root group=root
+  with_dict: redis
+
+- name: enable autostart
+  service: name=redis-{{ item.key }} enabled=yes
+  with_dict: redis
+  ignore_errors: true
+
+- name: launch services
+  command: service redis-{{ item.key }} restart
+  with_dict: redis
+  ignore_errors: true

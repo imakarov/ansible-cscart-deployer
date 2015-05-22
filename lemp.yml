@@ -1,0 +1,34 @@
+---
+
+- name: Apply common configuration to all nodes
+  gather_facts: false
+  sudo: true
+  hosts: all
+  roles:
+    - common
+
+- name: Apply configuration to app nodes
+  sudo: true
+  hosts: app
+  roles:
+    - php
+    - deploy
+
+- name: Apply configuration to frontend nodes
+  sudo: true
+  hosts: fe
+  roles:
+    - nginx
+    - deploy
+
+- name: Apply configuration to database nodes
+  sudo: true
+  hosts: db
+  roles:
+    - mysql
+
+- name: Apply configuration to nosql nodes
+  sudo: true
+  hosts: nosql
+  roles:
+    - redis

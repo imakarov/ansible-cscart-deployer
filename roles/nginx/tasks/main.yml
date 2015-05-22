@@ -1,0 +1,78 @@
+- name: install NGINX PPA
+  apt_repository: repo=ppa:nginx/stable state=present
+
+- name: install NGINX
+  apt: name={{ item }} state=latest update_cache=yes
+  with_items: nginx_role.packages
+
+- name: remove absent configurations
+  file: path={{ item }} state=absent
+  with_items:
+    - "/etc/nginx/conf.d"
+    - "/etc/nginx/conf-available"
+    - "/etc/nginx/conf-enabled"
+    - "/etc/nginx/sites-available"
+    - "/etc/nginx/sites-enabled"
+
+- name: create directories
+  file: path={{ item }} state=directory
+  with_items:
+    - "/etc/nginx/conf-available"
+    - "/etc/nginx/conf-enabled"
+    - "/etc/nginx/sites-available"
+    - "/etc/nginx/sites-enabled"
+
+- name: create nginx group
+  group:
+    name={{ nginx_role.group }}
+    state=present
+    system=yes
+
+- name: create nginx user
+  user:
+    name={{ nginx_role.owner }}
+    group={{ nginx_role.group }}
+    state=present
+    system=yes
+
+- name: load configurations
+  template: src={{ item.src }}.j2 dest=/etc/nginx/{{ item.dest }}
+  with_items:
+    - { src: "nginx.conf", dest: "nginx.conf" }
+    - { src: "upstream.conf", dest: "upstream.conf" }
+    - { src: "fastcgi.conf", dest: "fastcgi.conf" }
+    - { src: "fastcgi_secure.conf", dest: "fastcgi_secure.conf" }
+    - { src: "conf-available/gzip.conf", dest: "conf-available/gzip.conf" }
+    - { src: "conf-available/tweaks.conf", dest: "conf-available/tweaks.conf" }
+
+- name: load virtual hosts
+  template:
+    src=sites-available/default.conf.j2
+    dest=/etc/nginx/sites-available/{{ item.key }}.conf
+  with_dict: stores
+
+- name: enable configurations
+  file: src=/etc/nginx/{{ item.src }} dest=/etc/nginx/{{ item.dest }} state=link
+  with_items:
+    - { src: "conf-available/gzip.conf", dest: "conf-enabled/gzip.conf" }
+    - { src: "conf-available/tweaks.conf", dest: "conf-enabled/tweaks.conf" }
+
+- name: enable virtual hosts
+  file:
+    src=/etc/nginx/sites-available/{{ item.key }}.conf
+    dest=/etc/nginx/sites-enabled/{{ item.key }}.conf
+    state=link
+  with_dict: stores
+
+- name: create log directories
+  file:
+    path={{ nginx_role.logdir }}/{{ item.key }}
+    mode=0755
+    owner={{ nginx_role.owner }}
+    group={{ nginx_role.group }}
+    state=directory
+    recurse=yes
+  with_dict: stores
+
+- name: restart NGINX
+  command: service {{ nginx_role.service }} restart

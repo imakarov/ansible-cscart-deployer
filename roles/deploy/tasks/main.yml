@@ -1,0 +1,9 @@
+- name: create project directories
+  file:
+    path={{ item.value.root }}
+    state=directory
+    mode=0755
+    owner={{ php_pool[item.value.pool]['owner'] }}
+    group={{ php_pool[item.value.pool]['group'] }}
+  ignore_errors: true
+  with_dict: stores

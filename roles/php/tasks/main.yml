@@ -1,0 +1,57 @@
+- name: install PHP PPA
+  apt_repository: repo=ppa:ondrej/php5-5.6 state=present
+
+- name: install common packages
+  apt: name={{ item }} state=latest
+  with_items: php_role.common.packages
+
+- name: install PHP extensions
+  apt: name={{ item }} state=latest
+  with_items: php_role.extensions.packages
+
+- name: install PHP (FastCGI SAPI)
+  apt: name={{ item }} state=latest
+  with_items: php_role.fpm.packages
+
+- name: copy default configurations
+  template: src={{ item.src }}.j2 dest=/etc/php5/{{ item.dest }}
+  with_items:
+    - { src: "php.ini", dest: "fpm/php.ini" }
+    - { src: "php.ini", dest: "cli/php.ini" }
+
+- name: copy apcu configuration
+  template: src={{ item.src }}.j2 dest=/etc/php5/{{ item.dest }}
+  with_items:
+    - { src: "mods-available/apcu.ini", dest: "mods-available/apcu.ini" }
+
+- name: copy redis configuration
+  template: src={{ item.src }}.j2 dest=/etc/php5/{{ item.dest }}
+  with_items:
+    - { src: "mods-available/redis.ini", dest: "mods-available/redis.ini" }
+
+- name: copy pool's configurations
+  template: src=pool.d/www.conf.j2 dest=/etc/php5/fpm/pool.d/{{ item.key }}.conf
+  with_dict: php_pool
+
+- name: create pool's groups
+  group: name={{ item.value.group }} state=present system=yes
+  when: item.value.group is defined
+  with_dict: php_pool
+
+- name: create pool's users
+  user: name={{ item.value.owner }} group={{ item.value.group }} state=present system=yes
+  when: (item.value.owner is defined) and (item.value.group is defined)
+  with_dict: php_pool
+
+- name: create log directories
+  file:
+    path={{ php_role.fpm.logdir }}/{{ item.key }}
+    state=directory
+    mode=0755
+    owner={{ php_pool[item.value.pool]['owner']|default(php_role.fpm.owner) }}
+    group={{ php_pool[item.value.pool]['group']|default(php_role.fpm.group) }}
+    recurse=yes
+  with_dict: stores
+
+- name: restart PHP-FPM
+  command: service {{ php_role.fpm.service }} restart
