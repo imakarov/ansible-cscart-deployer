@@ -19,7 +19,7 @@
          sudo -i
          mkdir /srv/ansible
          cd /srv/ansible
-         git clone https://github.com/gongled/ansible-cscart.git
+         git clone https://github.com/gongled/ansible-cscart-deployer.git
 
  3. Настройте конфиг *group_vars/all*: домен магазина и его витрин, название скрипта админпанели и путь до файлов магазина.
 
