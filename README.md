@@ -1,0 +1,37 @@
+# Автоконфигуратор сервера для CS-Cart и Multi-Vendor
+
+Сценарий автоматически настроит сервер для CS-Cart и Multi-Vendor. Работает в Ubuntu 14.04+, тестировал в Digital Ocean.
+
+## Требования
+
+ - Ansible 1.8+
+
+## Использование
+
+ 1. Установите Ansible.
+
+        sudo apt-get update
+        sudo apt-get -y install python-pip python-dev
+        sudo pip install ansible
+
+ 2. Загрузите сценарии.
+
+         sudo -i
+         mkdir /srv/ansible
+         cd /srv/ansible
+         git clone https://github.com/gongled/ansible-cscart.git
+
+ 3. Настройте конфиг *group_vars/all*: домен магазина и его витрин, название скрипта админпанели и путь до файлов магазина.
+
+         stores:
+           mystore.com:
+             storefronts: ['mystorefront.com']
+             adminpanel: "secureadmin.php"
+             pool: "www"
+             root: "/var/www/html"
+
+ 4. Запустите настройку.
+
+         ansible-playbook lemp.yml -c local
+
+ **Готово.**
