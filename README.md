@@ -32,8 +32,14 @@
              pool: "www"
              root: "/var/www/html"
 
- 4. Запустите настройку.
+ 4. Запустите настройку для установки LEMP
 
          ansible-playbook lemp.yml -c local
+
+    или для LEMH
+
+         ansible-playbook lemh.yml -c local
+
+ Учтите, что для HHVM потребуется 64-разрядная Ubuntu 14.04.
 
  **Готово.**

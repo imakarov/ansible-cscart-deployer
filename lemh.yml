@@ -11,14 +11,14 @@
   sudo: true
   hosts: app
   roles:
-    - php
+    - hhvm
     - deploy
 
 - name: Apply configuration to frontend nodes
   sudo: true
   hosts: fe
   roles:
-    - { role: nginx, upstream_backend: 'php' }
+    - { role: nginx, upstream_backend: 'hhvm' }
     - deploy
 
 - name: Apply configuration to database nodes

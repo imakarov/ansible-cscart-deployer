@@ -1,3 +1,21 @@
+{% macro ngx_backend() %}
+{% if upstream_backend == "php" %}
+        fastcgi_pass {{ item.value.pool|default('www') }};
+        fastcgi_index index.php;
+        fastcgi_read_timeout 61;
+        include fastcgi.conf;
+{% elif upstream_backend == "hhvm" %}
+        fastcgi_pass hhvm;
+        fastcgi_index index.php;
+        fastcgi_read_timeout 61;
+        include "fastcgi.conf";
+{% elif upstream_backend == "apache" %}
+        proxy_pass http://web;
+        proxy_read_timeout 61;
+        include "proxy.conf";
+{% endif %}
+{% endmacro %}
+
 server {
     listen  80;
     server_name {{ item.key }};
@@ -22,12 +40,8 @@ server {
     error_page 598 = @backend;
 
     location @backend {
-        proxy_read_timeout 61;
-        fastcgi_read_timeout 61;
         try_files $uri $uri/ =404;
-        fastcgi_pass {{ item.value.pool|default('www') }};
-        fastcgi_index index.php;
-        include fastcgi.conf;
+        {{ ngx_backend() }}
     }
 
     location / {

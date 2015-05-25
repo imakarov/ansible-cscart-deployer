@@ -1,10 +1,29 @@
-[fe]
+[fe:children]
+nginx
+
+[app:children]
+php
+hhvm
+apache
+
+[db:children]
+mysql
+
+################################################################################
+
+[nginx]
 172.17.0.2
 
-[app]
+[php]
 172.17.0.2
 
-[db]
+[hhvm]
+172.17.0.2
+
+[apache]
+172.17.0.2
+
+[mysql]
 172.17.0.2
 
 [nosql]

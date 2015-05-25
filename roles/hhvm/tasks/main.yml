@@ -1,0 +1,68 @@
+---
+
+- fail: msg="HHVM can be installed on x86_64 machine only. Interrupted."
+  when: ansible_architecture == "x86_64"
+
+- name: create system group
+  group:
+    name={{ hhvm.group|default(hhvm_role.group) }}
+    state=present
+
+- name: create system user
+  user:
+    name={{ hhvm.owner|default(hhvm_role.owner) }}
+    shell="/bin/false"
+    groups={{ hhvm.group|default(hhvm_role.group) }}
+    system=yes
+    append=no
+
+- name: create logging directory
+  file:
+    path={{ hhvm_role.logdir }}
+    state=directory
+
+- name: create session directory
+  file:
+    path={{ hhvm_role.sessiondir }}
+    state=directory
+    mode=0775
+    owner={{ hhvm.owner|default(hhvm_role.owner) }}
+    group={{ hhvm.group|default(hhvm_role.group) }}
+
+- name: add repository
+  copy:
+    src=hhvm.list
+    dest=/etc/apt/sources.list.d
+
+- name: install packages
+  apt:
+    pkg={{ item }}
+    update_cache=yes
+    state=installed
+    force=yes
+  with_items: hhvm_role.packages
+
+- name: install FastCGI components
+  command: "/usr/share/hhvm/install_fastcgi.sh"
+  ignore_errors: True
+  register: hhvm_fcgi_result
+  changed_when: "'symlink' in hhvm_fcgi_result.stdout"
+
+- name: copy service
+  template:
+    src=hhvm.j2
+    dest=/etc/init.d/hhvm
+    mode=0775
+    owner=root
+    group=root
+
+- name: copy configurations
+  template:
+    src={{ item }}.j2
+    dest=/etc/hhvm/{{ item }}
+  with_items:
+    - "php.ini"
+    - "server.ini"
+
+- name: launch service
+  command: service hhvm restart
