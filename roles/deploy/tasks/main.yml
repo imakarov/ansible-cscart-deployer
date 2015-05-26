@@ -8,6 +8,9 @@
   ignore_errors: true
   when: upstream_backend == "php"
   with_dict: stores
+  tags:
+    - nginx
+    - php
 
 - name: create project directories
   file:
@@ -19,3 +22,6 @@
   ignore_errors: true
   when: upstream_backend == "hhvm"
   with_dict: stores
+  tags:
+    - nginx
+    - hhvm

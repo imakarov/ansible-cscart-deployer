@@ -14,3 +14,4 @@
 
 - name: remove the MySQL preseed file
   file: path=/root/mysql.seed state=absent
+  when: ansible_os_family == "Debian"

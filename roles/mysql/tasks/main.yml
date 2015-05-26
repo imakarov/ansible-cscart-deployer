@@ -1,41 +1,93 @@
+- name: load platform variables
+  include_vars: "{{ ansible_os_family|lower }}.yml"
+  tags:
+    - mysql
+
 - include: password.yml
   when: mysql.password is defined and mysql.password != ""
+  tags:
+    - mysql
+
+- name: check for previous installation
+  stat: path=/usr/sbin/mysqld
+  register: mysqld_stat
+
+- name: install dependencies via apt
+  apt: name=python-mysqldb state=present
+  when: ansible_os_family == "Debian"
+  tags:
+    - mysql
+
+- name: install dependencies via yum
+  yum: name=MySQL-python state=latest
+  when: ansible_os_family == "RedHat"
+  tags:
+    - mysql
+
+- name: install MySQL packages via apt
+  apt: name={{ item }} state=latest
+  with_items: mysql_role.packages
+  when: ansible_os_family == "Debian"
+  tags:
+    - mysql
+
+- name: install MySQL packages via yum
+  yum: name={{ item }} state=latest enablerepo=remi,remi-php56
+  with_items: mysql_role.packages
+  when: ansible_os_family == "RedHat"
+  tags:
+    - mysql
+
+- name: restart MySQL
+  command: service {{ mysql_role.service }} restart
+  tags:
+    - mysql
+
+- name: update root password for localhost root account
+  command: /usr/bin/mysqladmin -u root password '{{ mysql.password }}'
+  when: (ansible_os_family == "RedHat") and (mysqld_stat.stat.exists == False)
+  ignore_errors: true
+  tags:
+    - mysql
 
 - name: setup MySQL password file
   template: src=root_my.cnf.j2 dest=/root/.my.cnf
   when: mysql.password is defined and mysql.password != ""
-
-- name: install dependencies
-  apt: name=python-mysqldb state=present
-
-#- name: install MySQL PPA
-#  apt_repository: repo=ppa:ondrej/mysql-5.6 state=present
-
-- name: install MySQL packages
-  apt: name={{ item }} state=latest
-  with_items: mysql_role.packages
-
-- name: restart MySQL
-  command: service {{ mysql_role.service }} restart
+  tags:
+    - mysql
 
 - name: backup configuration
-  shell: creates=/etc/mysql/my.cnf.orig cp /etc/mysql/my.cnf /etc/mysql/my.cnf.orig
+  shell: creates={{ mysql_role.confdir }}/my.cnf.orig cp {{ mysql_role.confdir }}/my.cnf {{ mysql_role.confdir }}/my.cnf.orig
   register: result
+  tags:
+    - mysql
 
-- fetch: src=/etc/mysql/my.cnf.orig dest=fetched
+- fetch: src={{ mysql_role.confdir }}/my.cnf.orig dest=fetched
   when: result|changed
+  tags:
+    - mysql
 
 - name: deploy configuration
-  template: src=my.cnf.j2 dest=/etc/mysql/my.cnf owner=root mode=0644 backup=yes
+  template: src=my.cnf.j2 dest={{ mysql_role.confdir }}/my.cnf owner=root mode=0644 backup=yes
   register: result
+  tags:
+    - mysql
 
 - name: restart MySQL
   command: service {{ mysql_role.service }} restart
+  tags:
+    - mysql
 
-- fetch: src=/etc/mysql/my.cnf dest=fetched
+- fetch: src={{ mysql_role.confdir }}/my.cnf dest=fetched
   when: result|changed
+  tags:
+    - mysql
 
 - include: security.yml
+  tags:
+    - mysql
 
 - name: check service daemon
   command: service {{ mysql_role.service }} restart
+  tags:
+    - mysql

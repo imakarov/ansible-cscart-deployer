@@ -1,5 +1,6 @@
 mysql_role:
-  service: mysql
+  confdir: "/etc"
+  service: mysqld
   packages:
     - mysql-server
     - mysql-client

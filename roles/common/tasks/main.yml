@@ -1,3 +1,26 @@
-- name: install basic components
+- name: fetch variables
+  include_vars: "{{ ansible_os_family|lower }}.yml"
+  tags:
+    - common
+
+- name: install basic components via apt
   apt: name={{ item }} state=latest update_cache=yes
   with_items: common.packages
+  when: ansible_os_family == "Debian"
+  tags:
+    - common
+
+- name: install EPEL and REMI repository
+  yum: name={{ item }} state=present
+  with_items:
+    - "https://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm"
+    - "http://rpms.famillecollet.com/enterprise/remi-release-6.rpm"
+  tags:
+    - common
+
+- name: install basic components via yum
+  yum: name={{ item }} state=latest
+  with_items: common.packages
+  when: ansible_os_family == "RedHat"
+  tags:
+    - common

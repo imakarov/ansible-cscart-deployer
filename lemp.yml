@@ -1,7 +1,6 @@
 ---
 
 - name: Apply common configuration to all nodes
-  gather_facts: false
   sudo: true
   hosts: all
   roles:

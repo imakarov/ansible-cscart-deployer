@@ -1,0 +1,6 @@
+common:
+  packages:
+    - htop
+    - mc
+    - tmux
+    - vim

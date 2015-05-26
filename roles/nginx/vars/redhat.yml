@@ -1,0 +1,7 @@
+nginx_role:
+  logdir: "/var/log/nginx"
+  owner: "nginx"
+  group: "nginx"
+  service: nginx
+  packages:
+    - nginx
