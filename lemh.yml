@@ -10,6 +10,8 @@
 - name: Apply configuration to app nodes
   sudo: true
   hosts: app
+  vars:
+    upstream_backend: "hhvm"
   roles:
     - hhvm
     - deploy
@@ -17,8 +19,10 @@
 - name: Apply configuration to frontend nodes
   sudo: true
   hosts: fe
+  vars:
+    upstream_backend: "hhvm"
   roles:
-    - { role: nginx, upstream_backend: 'hhvm' }
+    - nginx
     - deploy
 
 - name: Apply configuration to database nodes
