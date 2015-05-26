@@ -1,33 +1,45 @@
 # Автоконфигуратор сервера для CS-Cart и Multi-Vendor
-Сценарии за 10 минут помогут сконфигурировать сервер для магазинов CS-Cart и Multi-Vendor. Поддерживается установка LEMP в Ubuntu 14.04 и CentOS 6, и LEMH в Ubuntu 14.04 x64 на чистом сервере; работа на ранее настроенном сервере не гарантируется.  
-На сервере настраивается NGINX 1.8.0,PHP 5.6 или HHVM 3.6.0 с поддержкой Redis и APCu,MySQL 5.5, а также Redis 2.3.0 для хранения кеша и сессий. Параметры оптимальны для работы в 5-долларовом дроплете Digital Ocean.  
+
+Сценарий автоматически настроит сервер для CS-Cart и Multi-Vendor. Работает в Ubuntu 14.04+, тестировал в Digital Ocean.
 
 [![Туториал](https://img.youtube.com/vi/Z_iVBRcmlaA/0.jpg)](https://www.youtube.com/watch?v=Z_iVBRcmlaA)
 
-## **Установка**
-Установите Ansible.<pre>sudo apt-get update  
-sudo apt-get -y install git python-pip python-dev  
-sudo pip install ansible</pre>Загрузите сценарии.<pre>
+## Требования
 
-    sudo -i
-    mkdir /srv/ansible
-    cd /srv/ansible
-    git clone https://github.com/gongled/ansible-cscart-deployer.git .
-</pre>
+ - Ansible 1.8+
 
-## **Использование**
-Исправьте конфиг**group_vars/all.**  
-<pre>
+## Использование
 
-    stores:
-      mystore.com:
-        storefronts: ['mystorefront.com']
-        adminpanel: "secureadmin.php"
-        pool: "www"
-        root: "/var/www/html"
-</pre>Запустите настройку.  
-  
-LAMP:<pre>ansible-playbook lemp.yml -c local</pre>LEMH:<pre>ansible-playbook lemh.yml -c local</pre>Готово.  
-  
-**
-**
+ 1. Установите Ansible.
+
+        sudo apt-get update
+        sudo apt-get -y install git python-pip python-dev
+        sudo pip install ansible
+
+ 2. Загрузите сценарии.
+
+         sudo -i
+         mkdir /srv/ansible
+         cd /srv/ansible
+         git clone https://github.com/gongled/ansible-cscart-deployer.git .
+
+ 3. Настройте конфиг *group_vars/all*: домен магазина и его витрин, название скрипта админпанели и путь до файлов магазина.
+
+         stores:
+           mystore.com:
+             storefronts: ['mystorefront.com']
+             adminpanel: "secureadmin.php"
+             pool: "www"
+             root: "/var/www/html"
+
+ 4. Запустите настройку для установки LEMP
+
+         ansible-playbook lemp.yml -c local
+
+    или для LEMH
+
+         ansible-playbook lemh.yml -c local
+
+ Учтите, что для HHVM потребуется 64-разрядная Ubuntu 14.04.
+
+ **Готово.**
