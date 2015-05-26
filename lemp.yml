@@ -10,6 +10,8 @@
 - name: Apply configuration to app nodes
   sudo: true
   hosts: app
+  vars:
+    upstream_backend: "php"
   roles:
     - php
     - deploy
@@ -17,6 +19,8 @@
 - name: Apply configuration to frontend nodes
   sudo: true
   hosts: fe
+  vars:
+    upstream_backend: "php"
   roles:
     - { role: nginx, upstream_backend: 'php' }
     - deploy
