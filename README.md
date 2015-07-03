@@ -1,6 +1,6 @@
 # Автоконфигуратор сервера для CS-Cart и Multi-Vendor
 
-Сценарий автоматически настроит сервер для CS-Cart и Multi-Vendor. Работает в Ubuntu 14.04+, тестировал в Digital Ocean.
+Сценарий автоматически настроит сервер для CS-Cart и Multi-Vendor. Работает в Ubuntu 14.04+ и CentOS 6.6.
 
 [![Туториал](https://img.youtube.com/vi/Z_iVBRcmlaA/0.jpg)](https://www.youtube.com/watch?v=Z_iVBRcmlaA)
 
@@ -27,6 +27,6 @@
 
          ansible-playbook lemh.yml -c local
 
- Учтите, что для HHVM потребуется 64-разрядная Ubuntu 14.04 или CentOS 6.6.
+ Учтите, что для HHVM потребуется 64-разрядная Ubuntu 14.04.
 
  **Готово.**
