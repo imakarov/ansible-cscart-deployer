@@ -8,7 +8,7 @@
 
  1. Установите зависимости 
 
-		curl -Ls https://gist.githubusercontent.com/gongled/a524d42d4a4ad8551756/raw/67b60412995b0c3ef442953ad5b8199fe9d42979/gistfile1.sh | /bin/bash
+		curl -sL https://gist.github.com/gongled/a524d42d4a4ad8551756/raw/ansible-bootstrap.sh | /bin/bash
 
  2. Исправьте конфиг *group_vars/all*.
 
