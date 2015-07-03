@@ -1,5 +1,12 @@
 - name: load platform variables
-  include_vars: "{{ ansible_os_family|lower }}.yml"
+  include_vars: "debian.yml"
+  when: ansible_os_family == "Debian"
+  tags:
+    - mysql
+
+- name: load platform variables
+  include_vars: "rhel{{ ansible_distribution_major_version }}.yml"
+  when: ansible_os_family == "RedHat"
   tags:
     - mysql
 
