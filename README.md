@@ -10,20 +10,11 @@
 
 ## Использование
 
- 1. Установите Ansible.
+ 1. Запустите сценарий 
 
-        sudo apt-get update
-        sudo apt-get -y install git python-pip python-dev
-        sudo pip install ansible
+	 curl -Ls https://gist.githubusercontent.com/gongled/a524d42d4a4ad8551756/raw/67b60412995b0c3ef442953ad5b8199fe9d42979/gistfile1.sh | /bin/bash
 
- 2. Загрузите сценарии.
-
-         sudo -i
-         mkdir /srv/ansible
-         cd /srv/ansible
-         git clone https://github.com/gongled/ansible-cscart-deployer.git .
-
- 3. Настройте конфиг *group_vars/all*: домен магазина и его витрин, название скрипта админпанели и путь до файлов магазина.
+ 2. Настройте конфиг *group_vars/all*: домен магазина и его витрин, название скрипта админпанели и путь до файлов магазина.
 
          stores:
            mystore.com:
@@ -32,7 +23,7 @@
              pool: "www"
              root: "/var/www/html"
 
- 4. Запустите настройку для установки LEMP
+ 3. Запустите настройку для установки LEMP
 
          ansible-playbook lemp.yml -c local
 

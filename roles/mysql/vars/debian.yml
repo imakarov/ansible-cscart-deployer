@@ -1,5 +1,6 @@
 mysql_role:
   confdir: "/etc/mysql"
+  socket: "/var/run/mysqld/mysqld.sock"
   service: mysql
   packages:
     - mysql-server

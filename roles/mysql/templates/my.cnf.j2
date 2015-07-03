@@ -1,16 +1,16 @@
 [client]
 port            = {{ mysql.port|default('3306') }}
-socket          = {{ mysql.socket|default("/var/run/mysqld/mysqld.sock") }}
+socket          = {{ mysql_role.socket|default("/var/run/mysqld/mysqld.sock") }}
 
 [mysqld_safe]
-socket          = {{ mysql.socket|default("/var/run/mysqld/mysqld.sock") }}
+socket          = {{ mysql_role.socket|default("/var/run/mysqld/mysqld.sock") }}
 nice            = 0
 
 [mysqld]
 user            = mysql
 bind-address    = {{ mysql.host|default("0.0.0.0") }}
 pid             = {{ mysql.pid|default("/var/run/mysqld/mysqld.pid") }}
-socket          = {{ mysql.socket|default("/var/run/mysqld/mysqld.sock") }}
+socket          = {{ mysql_role.socket|default("/var/run/mysqld/mysqld.sock") }}
 port            = {{ mysql.port|default('3306') }}
 basedir         = /usr
 datadir         = /var/lib/mysql
