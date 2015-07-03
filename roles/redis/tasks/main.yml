@@ -15,7 +15,7 @@
 
 - name: install Redis PPA via apt-repository
   apt_repository: repo=ppa:chris-lea/redis-server state=present
-  when: (redis_bin_stat.stat.exists == False) and (ansible_os_family == "Debian")
+  when: (redis_bin_stat.stat.exists == False) and (ansible_distribution == "Ubuntu")
   tags:
     - redis
 

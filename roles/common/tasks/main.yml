@@ -3,6 +3,20 @@
   tags:
     - common
 
+- name: install dotdeb repository
+  template: 
+    src=sources.list.d/dotdeb.list.j2
+    dest=/etc/apt/sources.list.d/dotdeb.list
+  when: ansible_distribution == "Debian"
+  tags:
+    - common
+
+- name: add GPG key (dotdeb)
+  apt_key: url=http://www.dotdeb.org/dotdeb.gpg state=present
+  when: ansible_distribution == "Debian"
+  tags:
+    - common
+
 - name: install basic components via apt
   apt: name={{ item }} state=latest update_cache=yes
   with_items: common.packages

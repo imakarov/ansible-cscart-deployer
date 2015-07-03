@@ -5,9 +5,24 @@
 
 - name: install NGINX PPA
   apt_repository: repo=ppa:nginx/stable state=present
-  when: ansible_os_family == "Debian"
+  when: ansible_distribution == "Ubuntu"
   tags:
     - nginx
+
+- name: install NGINX repo
+  template: 
+    src=sources.list.d/nginx.list.j2
+    dest=/etc/apt/sources.list.d/nginx.list
+  when: ansible_distribution == "Debian"
+  tags:
+    - nginx
+
+- name: add NGINX GPG key
+  apt_key: url=http://nginx.org/keys/nginx_signing.key state=present
+  when: ansible_distribution == "Debian"
+  tags:
+    - nginx
+  
 
 - name: install NGINX
   apt: name={{ item }} state=latest update_cache=yes

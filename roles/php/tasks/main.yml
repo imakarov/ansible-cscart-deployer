@@ -3,14 +3,22 @@
   tags:
     - php
 
+- name: install dotdeb repository
+  template:
+    src=sources.list.d/dotdeb-php.list
+    dest=/etc/apt/sources.list.d/dotdeb-php.list
+  when: ansible_distribution == "Debian"
+  tags:
+    - php
+
 - name: install PHP PPA via apt-repository
   apt_repository: repo=ppa:ondrej/php5-5.6 state=present
-  when: ansible_os_family == "Debian"
+  when: ansible_distribution == "Ubuntu"
   tags:
     - php
 
 - name: install common packages via apt
-  apt: name={{ item }} state=latest
+  apt: name={{ item }} state=latest update_cache=yes
   with_items: php_role.common.packages
   when: ansible_os_family == "Debian"
   tags:
