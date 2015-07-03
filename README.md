@@ -1,6 +1,6 @@
 # Автоконфигуратор сервера для CS-Cart и Multi-Vendor
 
-Сценарий автоматически настроит сервер для CS-Cart и Multi-Vendor. Работает в Ubuntu 14.04+ и CentOS 6.6.
+Сценарий автоматически настроит сервер для CS-Cart и Multi-Vendor. Работает в Ubuntu 14.04+, Debian 6/7 и CentOS 6/7.
 
 [![Туториал](https://img.youtube.com/vi/Z_iVBRcmlaA/0.jpg)](https://www.youtube.com/watch?v=Z_iVBRcmlaA)
 
