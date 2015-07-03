@@ -5,8 +5,8 @@
   tags:
     - hhvm
 
-- fail: msg="HHVM is supported on OS Ubuntu only. Interrupted."
-  when: ansible_distribution != "Ubuntu"
+- fail: msg="RHEL is not supported yet. Interrupted."
+  when: ansible_os_family == "RedHat"
   tags:
     - hhvm
 
@@ -45,9 +45,10 @@
     - hhvm
 
 - name: add repository
-  copy:
-    src=hhvm.list
+  template:
+    src=hhvm.list.j2
     dest=/etc/apt/sources.list.d
+  when: ansible_os_family == "Debian"
   tags:
     - hhvm
 
