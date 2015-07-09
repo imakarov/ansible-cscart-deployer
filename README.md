@@ -8,7 +8,9 @@
 
  1. Установите зависимости 
 
+		cd /tmp
 		curl -sL https://gist.github.com/gongled/a524d42d4a4ad8551756/raw/ansible-bootstrap.sh | /bin/bash
+		cd ansible
 
  2. Исправьте конфиг *group_vars/all*.
 
