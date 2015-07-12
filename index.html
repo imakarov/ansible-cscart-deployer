@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Автоконфигуратор сервера для CS-Cart и Multi-Vendor (ß) by gongled</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Автоконфигуратор сервера для CS-Cart и Multi-Vendor (ß)</h1>
+        <p>Сценарии автоматической настройки Linux-серверов для магазинов CS-Cart и Multi-Vendor.</p>
+
+        <p class="view"><a href="https://github.com/gongled/ansible-cscart-deployer">View the Project on GitHub <small>gongled/ansible-cscart-deployer</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/gongled/ansible-cscart-deployer/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/gongled/ansible-cscart-deployer/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/gongled/ansible-cscart-deployer">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="Описание" class="anchor" href="#%D0%9E%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5" aria-hidden="true"><span class="octicon octicon-link"></span></a>Описание</h1>
+
+<p>Сценарий поможет автоматически настроить сервер для CS-Cart и Multi-Vendor 4.0+. Протестировано в <a href="http://ihor.ru/">Айхоре</a>, <a href="http://fastvps.ru">FastVPS</a> и <a href="https://digitalocean.com">Digital Ocean</a>.</p>
+
+<h2>
+<a id="Поддерживаемые-ОС" class="anchor" href="#%D0%9F%D0%BE%D0%B4%D0%B4%D0%B5%D1%80%D0%B6%D0%B8%D0%B2%D0%B0%D0%B5%D0%BC%D1%8B%D0%B5-%D0%9E%D0%A1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Поддерживаемые ОС</h2>
+
+<ul>
+<li>Ubuntu 14.04 x86_64</li>
+<li>Debian 6 Squeeze x86_64</li>
+<li>Debian 7 Wheezy x86_64</li>
+<li>CentOS 6 x86_64</li>
+<li>CentOS 7 x86_64</li>
+</ul>
+
+<h2>
+<a id="Ограничения" class="anchor" href="#%D0%9E%D0%B3%D1%80%D0%B0%D0%BD%D0%B8%D1%87%D0%B5%D0%BD%D0%B8%D1%8F" aria-hidden="true"><span class="octicon octicon-link"></span></a>Ограничения</h2>
+
+<ul>
+<li>Не работает на виртуальных хостингах.</li>
+<li>Не работает с панелями управления ISPManager, cPanel, Plesk и пр.</li>
+<li>Нужны права суперпользователя.</li>
+</ul>
+
+<h2>
+<a id="Использование" class="anchor" href="#%D0%98%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5" aria-hidden="true"><span class="octicon octicon-link"></span></a>Использование</h2>
+
+<p><strong>Установите Ansible и его зависимости</strong></p>
+
+<pre><code>cd /tmp
+curl -sL https://gist.github.com/gongled/a524d42d4a4ad8551756/raw/ansible-bootstrap.sh | /bin/bash
+cd ansible
+</code></pre>
+
+<p><strong>Исправьте конфиг <em>group_vars/all</em></strong></p>
+
+<pre><code>stores:
+    foo.com:
+        storefronts: ['foo.org']
+        adminpanel: "secretfoo.php"
+        pool: "www"
+        root: "/var/www/html/foo.com"
+    bar.com:
+        storefronts: []
+        adminpanel: "securebar.php"
+        pool: "www"
+        root: "/var/www/html/bar.com"
+</code></pre>
+
+<p><strong>Исправьте конфиг <em>group_vars/db</em></strong></p>
+
+<p>Измените пароль root для базы данных.</p>
+
+<pre><code>mysql:
+    password: lovesecretphrase
+</code></pre>
+
+<p><strong>Запустите настройку для установки</strong></p>
+
+<p>LEMP: NGINX, MySQL и PHP</p>
+
+<pre><code>ansible-playbook lemp.yml -c local
+</code></pre>
+
+<p>Готово.</p>
+
+<h2>
+<a id="Багрепортинг" class="anchor" href="#%D0%91%D0%B0%D0%B3%D1%80%D0%B5%D0%BF%D0%BE%D1%80%D1%82%D0%B8%D0%BD%D0%B3" aria-hidden="true"><span class="octicon octicon-link"></span></a>Багрепортинг</h2>
+
+<p><a href="https://github.com/gongled/ansible-cscart-deployer/issues/new">Создайте тикет</a> чтобы сообщить об ошибке или предложить идею.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/gongled">gongled</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-65044667-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
