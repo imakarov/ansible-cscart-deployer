@@ -1,7 +1,0 @@
----
-
-- name: Cleanup destination folder
-  shell: rm -rf {{cscart.root + '/*'}}
-
-- name: Copy repository and Unpack archive
-  unarchive: src={{ cscart.dist }} dest={{ cscart.root }} force=yes

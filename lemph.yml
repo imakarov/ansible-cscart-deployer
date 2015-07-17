@@ -1,9 +1,0 @@
----
-
-- include: lemh.yml
-
-- name: Install CS-Cart software (HipHop)
-  sudo: true
-  hosts: app
-  roles:
-    - cscart
