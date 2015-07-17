@@ -1,0 +1,33 @@
+{
+    "cscart": {
+        "root": "/var/www/html",
+        "dist": "/Users/azinovyev/Downloads/cscart_v4.3.3.zip",
+
+        "cart": {
+            "email": "admin@example.com",
+            "password": "admin",
+            "secret_key": "YOURVERYSECRETKEY",
+            "languages": ["en", "ru"],
+            "main_language": "ru",
+            "demo_catalog": true,
+            "theme_name": "responsive",
+            "license_number": "CART-1111-1111-1111-1111"
+        },
+
+        "database": {
+            "host": "localhost",
+            "name": "cscart_database",
+            "user": "cscart",
+            "password": "cscart",
+            "table_prefix": "cscart_",
+            "database_backend": "mysqli"
+        },
+
+        "http": {
+            "host": "localhost",
+            "secure_host": "localhost",
+            "path": "",
+            "secure_path": ""
+        }
+    }
+}
