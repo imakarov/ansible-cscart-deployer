@@ -1,0 +1,9 @@
+---
+
+- include: lemp.yml
+
+- name: Install CS-Cart software
+  sudo: true
+  hosts: app
+  roles:
+    - cscart
