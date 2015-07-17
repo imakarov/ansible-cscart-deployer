@@ -1,0 +1,8 @@
+{
+  "config":
+  {
+    "frontend": "nginx",
+    "backend":  "php-fpm",
+    "database": "mysql"
+  }
+}

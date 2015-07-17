@@ -1,0 +1,8 @@
+php_role:
+  fpm:
+    logdir: "/var/log/php5-fpm"
+    owner: "www-data"
+    group: "www-data"
+    service: "php5-fpm"
+    packages:
+      - "php5-fpm"

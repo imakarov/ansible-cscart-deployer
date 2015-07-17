@@ -9,26 +9,20 @@
 - name: Apply configuration to app nodes
   sudo: true
   hosts: app
-  vars:
-    upstream_backend: "php"
   roles:
-    - php
-    - deploy
+    - php/fpm
 
 - name: Apply configuration to frontend nodes
   sudo: true
   hosts: fe
-  vars:
-    upstream_backend: "php"
   roles:
-    - { role: nginx, upstream_backend: 'php' }
-    - deploy
+    - nginx/fpm
 
 - name: Apply configuration to database nodes
   sudo: true
   hosts: db
   roles:
-    - mysql
+    - mysql/common
 
 - name: Apply configuration to nosql nodes
   sudo: true
