@@ -12,6 +12,14 @@
   mysql_db: db=test state=absent login_user=root login_password={{ mysql.password }}
   ignore_errors: True
 
+- name: create user databases
+  mysql_db: db={{ item.value['dbname'] }} state=present login_user=root login_password={{ mysql.password }}
+  with_dict: stores
+
+- name: grant user privileges 
+  mysql_user: name={{ item.value['dbuser'] }} password={{ item.value['dbpass'] }} priv={{ item.value['dbname'] }}.*:ALL login_user=root login_password={{ mysql.password }}
+  with_dict: stores
+
 - name: remove the MySQL preseed file
   file: path=/root/mysql.seed state=absent
   when: ansible_os_family == "Debian"

@@ -74,9 +74,17 @@ server {
         add_header Access-Control-Allow-Origin *;
     }
 
+    {% if item.value.vendorpanel is defined %}
+    location = /{{ item.value.vendorpanel }} {
+        return 598;
+    }
+    {% endif %}
+
+    {% if item.value.adminpanel is defined %}
     location = /{{ item.value.adminpanel }} {
         return 598;
     }
+    {% endif %}
 
     location ~ /(index|api).php {
         return 598;

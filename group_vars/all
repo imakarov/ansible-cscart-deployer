@@ -4,3 +4,6 @@ stores:
     adminpanel: "admin.php"
     pool: "www"
     root: "/var/www/html"
+    dbname: example
+    dbuser: example
+    dbpass: example 
