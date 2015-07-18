@@ -5,6 +5,8 @@
   hosts: app
   roles:
     - php/fpm
+    - postfix
+    - ftp
 
 - name: Apply configuration to frontend nodes
   sudo: true

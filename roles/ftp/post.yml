@@ -1,0 +1,6 @@
+- hosts: ftp
+  user: goncharov
+  sudo: true
+
+  tasks:
+    - include: tasks/998-apply.yml

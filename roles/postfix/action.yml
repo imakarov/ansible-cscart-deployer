@@ -1,0 +1,9 @@
+---
+
+- hosts: postfix
+  user: goncharov
+  sudo: True
+
+  tasks:
+  - include: tasks/001-install.yml
+  - include: tasks/002-update.yml

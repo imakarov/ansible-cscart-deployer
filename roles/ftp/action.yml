@@ -1,0 +1,7 @@
+- hosts: ftp
+  user: goncharov
+  sudo: true
+
+  tasks:
+    - include: tasks/001-install.yml
+    - include: tasks/002-update.yml

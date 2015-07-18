@@ -1,0 +1,46 @@
+- name: check previous installations
+  shell: "[ -f /usr/sbin/postfix ]"
+  ignore_errors: True
+  register: postfix_exists
+  tags:
+   - mail
+
+- name: uninstall sendmail
+  apt:
+    pkg=sendmail
+    state=absent
+  when: (ansible_os_family == "Debian")
+  tags:
+   - mail
+
+- name: uninstall sendmail
+  yum:
+    pkg=sendmail
+    state=absent
+  when: (ansible_os_family == "RedHat")
+  tags:
+   - mail
+
+- name: load preseed
+  command: /usr/bin/debconf-set-selections /root/postfix.seed
+  when: (postfix_exists | failed) and (ansible_os_family == "Debian")
+  tags:
+   - mail
+
+- name: install packages
+  apt:
+    pkg={{ item }}
+    state=installed
+  when: (postfix_exists | failed) and (ansible_os_family == "Debian")
+  with_items: postfix_role.packages
+  tags:
+   - mail
+
+- name: install packages
+  yum:
+    pkg={{ item }}
+    state=installed
+  when: (postfix_exists | failed) and (ansible_os_family == "RedHat")
+  with_items: postfix_role.packages
+  tags:
+   - mail

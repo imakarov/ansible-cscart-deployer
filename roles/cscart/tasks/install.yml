@@ -7,6 +7,14 @@
   tags:
     - cscart
 
+- name: copy local_conf.php
+  template:
+    src=local_conf.php.j2
+    dest={{ item.value.cart.root }}/local_conf.php
+  with_dict: stores
+  tags:
+    - cscart
+
 - name: set permissions
   file:
     path={{ stores[item[0]]['cart']['root'] }}/{{ item[1].path }}

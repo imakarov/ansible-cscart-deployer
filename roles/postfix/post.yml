@@ -1,0 +1,8 @@
+---
+
+- hosts: postfix
+  user: goncharov
+  sudo: True
+
+  tasks:
+  - include: tasks/998-apply.yml

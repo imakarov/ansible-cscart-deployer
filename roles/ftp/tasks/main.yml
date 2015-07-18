@@ -1,0 +1,8 @@
+- name: load platform-depend variables
+  include_vars: "{{ ansible_os_family|lower }}.yml"
+  tags:
+    - ftp
+
+- include: "install.yml"
+- include: "update.yml"
+- include: "apply.yml"

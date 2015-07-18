@@ -1,0 +1,4 @@
+vsftpd:
+  service: "vsftpd"
+  packages: [ "vsftpd" ]
+  conf_path: "/etc/vsftpd"
