@@ -1,6 +1,0 @@
-- hosts: all
-  user: goncharov
-  sudo: true
-
-  tasks:
-    - include: tasks/000-init.yml

@@ -1,5 +1,12 @@
 ---
 
+- name: Apply configuration to all nodes
+  sudo: true
+  hosts: all
+  roles:
+    - fail2ban
+    - logrotate
+
 - name: Apply configuration to app nodes
   sudo: true
   hosts: app

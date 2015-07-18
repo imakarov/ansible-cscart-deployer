@@ -1,0 +1,11 @@
+---
+
+- name: Logrotate | Удаляем конфигурационный файл
+  file:
+    path=/etc/logrotate.conf
+    state=absent
+  when: (ansible_os_family == "RedHat")
+  tags:
+    [
+      "logrotate"
+    ]

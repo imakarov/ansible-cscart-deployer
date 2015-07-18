@@ -1,0 +1,9 @@
+---
+
+- name: load platform-depend configurations
+  include_vars: "{{ ansible_os_family|lower }}.yml"
+  tags:
+    - logrotate
+
+- include: "install.yml"
+- include: "update.yml"
