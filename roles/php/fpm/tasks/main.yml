@@ -17,6 +17,15 @@
   tags:
     - php
 
+- name: enable FPM configuration
+  file:
+    src=/etc/php.ini
+    dest=/etc/php5/fpm/php.ini
+    state=link
+  when: ansible_os_family == "Debian"
+  tags:
+    - nginx
+
 - name: copy pool's configurations on Debian/Ubuntu
   template: src=pool.d/www.conf.j2 dest=/etc/php5/fpm/pool.d/{{ item.key }}.conf
   with_dict: php_pool
