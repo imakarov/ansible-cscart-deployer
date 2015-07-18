@@ -1,11 +1,5 @@
 ---
 
-- name: Apply common configuration to all nodes
-  sudo: true
-  hosts: all
-  roles:
-    - common
-
 - name: Apply configuration to app nodes
   sudo: true
   hosts: app
@@ -29,3 +23,9 @@
   hosts: nosql
   roles:
     - redis
+
+- name: Install CS-Cart store
+  sudo: true
+  hosts: app
+  roles:
+    - cscart

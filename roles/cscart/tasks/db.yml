@@ -1,15 +1,9 @@
 ---
 
-- name: Install python Mysql package (Ubuntu)
-  apt: name=python-mysqldb state=present
-  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+- name: create user databases
+  mysql_db: db={{ item.value.database['name'] }} state=present login_user=root login_password={{ mysql.password }}
+  with_dict: stores
 
-- name: Install python Mysql package (CentOS)
-  yum: name=MySQL-python.x86_64 state=present
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
-
-- name: Create MySQL user
-  mysql_user: name={{ cscart.database.user }} password={{ cscart.database.password }} priv=*.*:ALL state=present
-
-- name: Create MySQL database
-  mysql_db: name={{ cscart.database.name }} state=present
+- name: grant user privileges
+  mysql_user: name={{ item.value.database['user'] }} password={{ item.value.database['password'] }} priv={{ item.value.database['name'] }}.*:ALL login_user=root login_password={{ mysql.password }}
+  with_dict: stores

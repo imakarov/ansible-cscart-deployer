@@ -1,7 +1,28 @@
 ---
 
 - name: Cleanup destination folder
-  shell: rm -rf {{cscart.root + '/*'}}
+  file: path={{ item.value.cart.root }} state=absent
+  when: (item.value.cart.dist is defined)
+  ignore_errors: true
+  with_dict: stores
+  tags:
+    - cscart
 
-- name: Copy repository and Unpack archive
-  unarchive: src={{ cscart.dist }} dest={{ cscart.root }} force=yes
+- name: create projects directories
+  file:
+    path={{ item.value.cart.root }}
+    state=directory
+    mode=755
+  ignore_errors: true
+  with_dict: stores
+  tags:
+    - nginx
+    - php
+    - cscart
+
+- name: Copy repository and unpack archive
+  unarchive: src={{ item.value.cart.dist }} dest={{ item.value.cart.root }} copy=no
+  when: (item.value.cart.dist is defined)
+  with_dict: stores
+  tags:
+    - cscart

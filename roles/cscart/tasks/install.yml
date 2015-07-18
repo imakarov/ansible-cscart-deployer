@@ -1,0 +1,26 @@
+- name: Install CS-Cart
+  shell: /usr/bin/env php index.php
+  args:
+    chdir: "{{ item.value.cart.root }}/install"
+  when: (item.value.cart.dist is defined)
+  with_dict: stores
+  tags:
+    - cscart
+
+- name: Change permissions
+  file:
+    path={{ stores[item[0]]['cart']['root'] }}/{{ item[1].path }}
+    mode={{ item[1].mode }}
+  when: (stores[item[0]]['cart']['dist'] is defined)
+  with_nested:
+    - "{{ stores }}"
+    - [
+      { path: 'var', mode: 777 },
+      { path: 'images', mode: 777 },
+      { path: 'design', mode: 777 },
+      { path: 'var/.htaccess', mode: 644 },
+      { path: 'images/.htaccess', mode: 644 },
+      { path: 'design/.htaccess', mode: 644 }
+      ]
+  tags:
+    - cscart

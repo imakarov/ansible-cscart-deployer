@@ -1,10 +1,13 @@
+- fail: msg="Cannot unable to find JSON config"
+  when: (stores is not defined)
+
 - name: fetch variables
   include_vars: "{{ ansible_os_family|lower }}.yml"
   tags:
     - common
 
 - name: install dotdeb repository
-  template: 
+  template:
     src=sources.list.d/dotdeb.list.j2
     dest=/etc/apt/sources.list.d/dotdeb.list
   when: ansible_distribution == "Debian"

@@ -1,5 +1,5 @@
 {% macro ngx_backend() %}
-        fastcgi_pass {{ item.value.pool|default('www') }};
+        fastcgi_pass www;
         fastcgi_index index.php;
         fastcgi_read_timeout 61;
         include fastcgi.conf;
@@ -11,19 +11,21 @@ server {
 {% if item.key.find('www') == -1 %}
     server_name www.{{ item.key }};
 {% endif %}
-{% for alias in item.value.storefronts %}
+{% if item.value.cart.storefronts is defined %}
+{% for alias in item.value.cart.storefronts %}
     server_name {{ alias }};
 {% if alias.find('www') == -1 %}
     server_name www.{{ alias }};
 {% endif %}
 {% endfor %}
+{% endif %}
 
     charset utf-8;
 
-    access_log  {{ nginx_role.logdir }}/{{ item.key }}/access.log combined;
+    access_log  {{ nginx_role.logdir }}/{{ item.key }}/access.log extended;
     error_log   {{ nginx_role.logdir }}/{{ item.key }}/error.log;
 
-    set $root "{{ item.value.root }}";
+    set $root "{{ item.value.cart.root }}";
     root $root;
 
     error_page 598 = @backend;
@@ -63,17 +65,15 @@ server {
         add_header Access-Control-Allow-Origin *;
     }
 
-    {% if item.value.vendorpanel is defined %}
-    location = /{{ item.value.vendorpanel }} {
+    {% if item.value.cart.vendorpanel is defined %}
+    location = /{{ item.value.cart.vendorpanel }} {
         return 598;
     }
     {% endif %}
 
-    {% if item.value.adminpanel is defined %}
-    location = /{{ item.value.adminpanel }} {
+    location = /{{ item.value.cart.adminpanel|default("admin.php") }} {
         return 598;
     }
-    {% endif %}
 
     location ~ /(index|api).php {
         return 598;

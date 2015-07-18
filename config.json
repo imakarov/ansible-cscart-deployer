@@ -1,0 +1,32 @@
+{
+    "stores": {
+        "example.com": {
+
+            "cart": {
+                "root": "/var/www/html/example.com",
+                "storefronts": ["example.org", "example.ru"],
+                "adminpanel": "admin.php",
+                "vendorpanel": "vendor.php",
+
+                "dist": "/root/cscart_v4.3.3.zip",
+                "email": "admin@example.com",
+                "password": "admin",
+                "secret_key": "YOURVERYSECRETKEY",
+                "languages": ["en", "ru"],
+                "main_language": "ru",
+                "demo_catalog": true,
+                "theme_name": "responsive",
+                "license_number": "CART-1111-1111-1111-1111"
+            },
+
+            "database": {
+                "host": "localhost",
+                "name": "example",
+                "user": "example",
+                "password": "example",
+                "table_prefix": "cscart_",
+                "database_backend": "mysqli"
+            }
+        }
+    }
+}

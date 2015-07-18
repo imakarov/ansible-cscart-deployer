@@ -1,8 +1,8 @@
 php_role:
   fpm:
     logdir: "/var/log/php-fpm"
-    owner: "www-data"
-    group: "www-data"
+    owner: "cartdeploy"
+    group: "cartdeploy"
     service: "php-fpm"
     packages:
       - "php-fpm"

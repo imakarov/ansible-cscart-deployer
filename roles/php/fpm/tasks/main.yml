@@ -50,8 +50,8 @@
     path={{ php_role.fpm.logdir }}/{{ item.key }}
     state=directory
     mode=0755
-    owner={{ php_pool[item.value.pool]['owner']|default(php_role.fpm.owner) }}
-    group={{ php_pool[item.value.pool]['group']|default(php_role.fpm.group) }}
+    owner={{ php_role.fpm.owner }}
+    group={{ php_role.fpm.group }}
     recurse=yes
   with_dict: stores
   tags:

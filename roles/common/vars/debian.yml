@@ -4,3 +4,4 @@ common:
     - mc
     - tmux
     - vim
+    - unzip
