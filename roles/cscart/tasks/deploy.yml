@@ -20,7 +20,7 @@
     - php
     - cscart
 
-- name: Copy repository and unpack archive
+- name: copy repository and unpack archive
   unarchive: src={{ item.value.cart.dist }} dest={{ item.value.cart.root }} copy=no
   when: (item.value.cart.dist is defined)
   with_dict: stores

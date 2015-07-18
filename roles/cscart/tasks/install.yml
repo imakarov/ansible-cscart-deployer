@@ -1,4 +1,4 @@
-- name: Install CS-Cart
+- name: install CS-Cart
   shell: /usr/bin/env php index.php
   args:
     chdir: "{{ item.value.cart.root }}/install"
@@ -7,7 +7,7 @@
   tags:
     - cscart
 
-- name: Change permissions
+- name: set permissions
   file:
     path={{ stores[item[0]]['cart']['root'] }}/{{ item[1].path }}
     mode={{ item[1].mode }}
