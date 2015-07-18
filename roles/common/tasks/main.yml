@@ -1,4 +1,5 @@
-- fail: msg="Cannot unable to find JSON config"
+- name: prepare configurations
+  fail: msg="Unable to find settings. Please, specify JSON config (-e @config/simple.json)."
   when: (stores is not defined)
 
 - name: fetch variables
