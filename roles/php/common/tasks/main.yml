@@ -52,12 +52,21 @@
   tags:
     - php
 
+- name: remove CLI configuration
+  file:
+    path=/etc/php5/cli/php.ini
+    state=absent
+  register: php_result
+  when: ansible_os_family == "Debian"
+  tags:
+    - nginx
+
 - name: enable CLI configuration
   file:
     src=/etc/php.ini
     dest=/etc/php5/cli/php.ini
     state=link
-  when: ansible_os_family == "Debian"
+  when: (ansible_os_family == "Debian") and (php_result|changed)
   tags:
     - nginx
 
