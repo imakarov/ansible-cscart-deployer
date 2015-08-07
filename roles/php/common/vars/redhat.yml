@@ -3,6 +3,7 @@ php_role:
     packages:
       - "php-curl"
       - "php-gd"
+      - "php-imagick"
       - "php-pear"
       - "php-mysql"
   extensions:
