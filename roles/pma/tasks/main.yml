@@ -1,0 +1,43 @@
+- name: load platform-depend variables
+  include_vars: "{{ ansible_os_family|lower }}.yml"
+  tags:
+    - phpmyadmin
+
+- name: check exist
+  command: "[ -d {{ pma_role.path }} ]"
+  ignore_errors: True
+  register: phpmyadmin_exists
+  tags:
+    - phpmyadmin
+
+- name: load preseed
+  template:
+    src=preseed.j2
+    dest=/root/phpmyadmin.seed
+  when: (phpmyadmin_exists | failed) and (ansible_os_family == "Debian")
+  tags:
+  - phpmyadmin
+
+- name: setup preseed
+  command: "/usr/bin/debconf-set-selections /root/phpmyadmin.seed"
+  when: (phpmyadmin_exists | failed) and (ansible_os_family == "Debian")
+  tags:
+    - phpmyadmin
+
+- name: install packages
+  apt:
+    pkg={{ item }}
+    state=latest
+  when: (phpmyadmin_exists | failed) and (ansible_os_family == "Debian")
+  with_items: pma_role.packages
+  tags:
+    - phpmyadmin
+
+- name: install packages
+  yum:
+    pkg={{ item }}
+    state=latest
+  when: (phpmyadmin_exists | failed) and (ansible_os_family == "RedHat")
+  with_items: pma_role.packages
+  tags:
+    - phpmyadmin
