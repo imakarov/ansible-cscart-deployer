@@ -1,0 +1,6 @@
+apache_role:
+  packages: [ "httpd" ]
+  service: "httpd"
+  rundir: "/var/run"
+  path: "/etc/httpd"
+  log: "/var/log/httpd"

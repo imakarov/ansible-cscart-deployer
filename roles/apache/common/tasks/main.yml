@@ -1,0 +1,139 @@
+- name: load platform-depend variables
+  include_vars: "{{ ansible_os_family|lower }}.yml"
+  tags:
+    - apache
+
+- name: create group
+  group:
+    name={{ apache.group }}
+    state=present
+  tags:
+    - apache
+
+- name: create user
+  user:
+    name={{ apache.user }}
+    shell="/bin/false"
+    groups={{ apache.group }}
+    system=yes
+    append=no
+  tags:
+    - apache
+
+- name: install packages
+  apt:
+    pkg={{ item }}
+    state=installed
+  with_items: apache_role.packages
+  when: (ansible_os_family == "Debian")
+  tags:
+    - apache
+
+- name: install packages
+  yum:
+    pkg={{ item }}
+    state=installed
+  when: (ansible_os_family == "RedHat")
+  with_items: apache_role.packages
+  tags:
+    - apache
+
+- name: cleanup directories for vhosts
+  file:
+    path={{ apache_role.path }}/{{ item }}
+    state=absent
+  with_items:
+    - "sites-available"
+    - "sites-enabled"
+  tags:
+    - apache
+
+- name: create directories for vhosts
+  file:
+    path={{ apache_role.path }}/{{ item }}
+    state=directory
+  with_items:
+    - "sites-available"
+    - "sites-enabled"
+  tags:
+    - apache
+
+- name: load virtual hosts
+  template:
+    src=vhosts.d/default.j2
+    dest={{ apache_role.path }}/sites-available/{{ item.key }}.conf
+  with_dict: stores
+  tags:
+    - apache
+
+- name: enable virtual hosts
+  file:
+    src={{ apache_role.path }}/sites-available/{{ item.key }}.conf
+    dest={{ apache_role.path }}/sites-enabled/{{ item.key }}.conf
+    state=link
+  with_dict: stores
+  tags:
+    - apache
+
+- name: load main configurations
+  template:
+    src={{ item }}.j2
+    dest={{ apache_role.path }}/{{ item }}
+  with_items:
+    [
+      "httpd.conf",
+      "magic"
+    ]
+  when: (ansible_os_family == "RedHat")
+  tags:
+    - apache
+
+- name: load main configurations
+  template:
+    src={{ item }}.j2
+    dest={{ apache_role.path }}/{{ item }}
+  with_items:
+    [
+      "apache2.conf"
+    ]
+  when: (ansible_os_family == "Debian")
+  tags:
+    - apache
+
+- name: enable default modules
+  command: "a2enmod {{ item }}"
+  with_items:
+    [
+      "rewrite",
+      "headers",
+      "expires"
+    ]
+  tags:
+    - apache
+
+- name: Apache | set permissions on /var/lock/apache2
+  file:
+    path=/var/lock/apache2
+    state=directory
+    recurse=yes
+    owner={{ apache.user }}
+    group={{ apache.group }}
+    mode=755
+  when: (ansible_os_family == "Debian")
+  tags:
+    - apache
+
+- name: put into autostart
+  service:
+    name={{ apache_role.service }}
+    enabled=yes
+  tags:
+    - apache
+
+- name: restart service
+  service:
+    name={{ apache_role.service }}
+    state=restarted
+  ignore_errors: True
+  tags:
+    - apache

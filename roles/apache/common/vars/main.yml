@@ -1,0 +1,8 @@
+apache:
+  host: 127.0.0.1
+  port: 8080
+  flavor: "prefork"
+  user: "www-data"
+  group: "www-data"
+  root: "/var/www/html"
+  stub: "/var/www/empty"

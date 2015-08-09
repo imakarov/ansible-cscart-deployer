@@ -1,0 +1,6 @@
+apache_role:
+  packages: [ "apache2", "apache2-mpm-prefork" ]
+  service: "apache2"
+  rundir: "/var/run"
+  path: "/etc/apache2"
+  log: "/var/log/apache2"
