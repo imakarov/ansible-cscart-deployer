@@ -1,3 +1,5 @@
+################################################################################
+
 {% for pool_name, pool_params in php_pool.iteritems() %}
 upstream {{ pool_name }} {
 {% for app_host in groups['app'] %}
@@ -13,3 +15,5 @@ upstream {{ pool_name }} {
 {% endfor %}
 }
 {% endfor %}
+
+################################################################################

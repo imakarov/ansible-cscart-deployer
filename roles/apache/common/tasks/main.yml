@@ -38,13 +38,25 @@
   tags:
     - apache
 
+- name: link modules directory
+  file:
+    src={{ apache_role.moddir }}/modules
+    dest={{ apache_role.path }}/modules
+    state=link
+  tags:
+    - apache
+
 - name: cleanup directories for vhosts
   file:
     path={{ apache_role.path }}/{{ item }}
     state=absent
   with_items:
-    - "sites-available"
+    - "html"
+    - "conf.d"
+    - "conf-enabled"
     - "sites-enabled"
+    - "mods-enabled"
+    - "xtra"
   tags:
     - apache
 
@@ -53,14 +65,20 @@
     path={{ apache_role.path }}/{{ item }}
     state=directory
   with_items:
+    - "html"
     - "sites-available"
     - "sites-enabled"
+    - "mods-available"
+    - "mods-enabled"
+    - "conf-available"
+    - "conf-enabled"
+    - "xtra"
   tags:
     - apache
 
 - name: load virtual hosts
   template:
-    src=vhosts.d/default.j2
+    src=sites-available/default.j2
     dest={{ apache_role.path }}/sites-available/{{ item.key }}.conf
   with_dict: stores
   tags:
@@ -75,13 +93,67 @@
   tags:
     - apache
 
-- name: load main configurations
+- name: load modules
+  template:
+    src=mods-available/{{ item }}.j2
+    dest={{ apache_role.path }}/mods-available/{{ item }}
+  with_items: apache.modules
+  tags:
+    - apache
+
+- name: enable modules
+  file:
+    src={{ apache_role.path }}/mods-available/{{ item }}
+    dest={{ apache_role.path }}/mods-enabled/{{ item }}
+    state=link
+  with_items: apache.modules
+  tags:
+    - apache
+
+- name: load modules configs
+  template:
+    src=conf-available/{{ item }}.j2
+    dest={{ apache_role.path }}/conf-available/{{ item }}
+  with_items: apache.configs
+  tags:
+    - apache
+
+- name: enable modules configs
+  file:
+    src={{ apache_role.path }}/conf-available/{{ item }}
+    dest={{ apache_role.path }}/conf-enabled/{{ item }}
+    state=link
+  with_items: apache.configs
+  tags:
+    - apache
+
+# - name: enable configurations
+#   file:
+#     src={{ apache_role.path }}/conf-available/{{ item.key }}.conf
+#     dest={{ apache_role.path }}/conf-enabled/{{ item.key }}.conf
+#     state=link
+#   with_items:
+#     - foo
+#     - bar
+#   tags:
+#     - apache
+
+- name: load main configs
+  template:
+    src={{ item }}.j2
+    dest={{ apache_role.path }}/conf/{{ item }}
+  with_items:
+    - "httpd.conf"
+  when: (ansible_os_family == "RedHat")
+  tags:
+    - apache
+
+- name: load extra configurations
   template:
     src={{ item }}.j2
     dest={{ apache_role.path }}/{{ item }}
   with_items:
     [
-      "httpd.conf",
       "magic"
     ]
   when: (ansible_os_family == "RedHat")
@@ -100,18 +172,32 @@
   tags:
     - apache
 
-- name: enable default modules
-  command: "a2enmod {{ item }}"
+- name: load custom pages
+  copy:
+    src={{ item }}
+    dest={{ apache_role.path }}/html/{{ item }}
   with_items:
-    [
-      "rewrite",
-      "headers",
-      "expires"
-    ]
+    - "401.html"
+    - "403.html"
+    - "404.html"
+    - "502.html"
+    - "50X.html"
+    - "index.html"
   tags:
     - apache
 
-- name: Apache | set permissions on /var/lock/apache2
+# - name: enable default modules
+#   command: "a2enmod {{ item }}"
+#   with_items:
+#     [
+#       "rewrite",
+#       "headers",
+#       "expires"
+#     ]
+#   tags:
+#     - apache
+
+- name: set permissions on /var/lock/apache2
   file:
     path=/var/lock/apache2
     state=directory

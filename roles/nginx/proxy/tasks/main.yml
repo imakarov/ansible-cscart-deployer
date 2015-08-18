@@ -1,0 +1,42 @@
+- name: load configs
+  template:
+    src={{ item }}.j2
+    dest=/etc/nginx/{{ item }}
+  with_items:
+    - "xtra/proxy_params.conf"
+    - "xtra/proxy_params_ssl.conf"
+    - "conf-available/upstream.conf"
+  tags:
+    - nginx
+
+- name: enable configs
+  file:
+    src=/etc/nginx/conf-available/{{ item }}
+    dest=/etc/nginx/conf-enabled/{{ item }}
+    state=link
+  with_items:
+    - upstream.conf
+  tags:
+    - nginx
+
+- name: load vhosts
+  template:
+    src=sites-available/default.conf.j2
+    dest=/etc/nginx/sites-available/{{ item.key }}.conf
+  with_dict: stores
+  tags:
+    - nginx
+
+- name: enable vhosts
+  file:
+    src=/etc/nginx/sites-available/{{ item.key }}.conf
+    dest=/etc/nginx/sites-enabled/{{ item.key }}.conf
+    state=link
+  with_dict: stores
+  tags:
+    - nginx
+
+- name: restart service
+  command: service {{ nginx_role.service }} restart
+  tags:
+    - nginx

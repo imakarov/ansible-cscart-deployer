@@ -11,7 +11,7 @@
 
 - name: install NGINX repo
   template:
-    src=sources.list.d/nginx.list.j2
+    src=apt/nginx.list.j2
     dest=/etc/apt/sources.list.d/nginx.list
   when: ansible_distribution == "Debian"
   tags:
@@ -22,7 +22,6 @@
   when: ansible_distribution == "Debian"
   tags:
     - nginx
-
 
 - name: install NGINX
   apt: name={{ item }} state=latest update_cache=yes
@@ -67,9 +66,7 @@
   file: path={{ item }} state=absent
   with_items:
     - "/etc/nginx/conf.d"
-    - "/etc/nginx/conf-available"
     - "/etc/nginx/conf-enabled"
-    - "/etc/nginx/sites-available"
     - "/etc/nginx/sites-enabled"
   tags:
     - nginx
@@ -77,6 +74,7 @@
 - name: create directories
   file: path={{ item }} state=directory
   with_items:
+    - "/etc/nginx/xtra"
     - "/etc/nginx/conf-available"
     - "/etc/nginx/conf-enabled"
     - "/etc/nginx/sites-available"
@@ -93,6 +91,21 @@
     state=directory
     recurse=yes
   with_dict: stores
+  tags:
+    - nginx
+
+- name: absent deprecated configurations
+  file:
+    path=/etc/nginx/{{ item }}
+    state=absent
+  with_items:
+    - "fastcgi_params"
+    - "fastcgi.conf"
+    - "fastcgi_params"
+    - "proxy_params"
+    - "scgi_params"
+    - "uwsgi_params"
+    - "snippets"
   tags:
     - nginx
 

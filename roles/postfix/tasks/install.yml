@@ -1,9 +1,7 @@
-- name: check previous installations
-  shell: "[ -f /usr/sbin/postfix ]"
-  ignore_errors: True
-  register: postfix_exists
+- stat: path=/usr/sbin/postfix
+  register: postfix_sbin_stat
   tags:
-   - mail
+    - mail
 
 - name: uninstall sendmail
   apt:
@@ -23,7 +21,7 @@
 
 - name: load preseed
   command: /usr/bin/debconf-set-selections /root/postfix.seed
-  when: (postfix_exists | failed) and (ansible_os_family == "Debian")
+  when: (postfix_sbin_stat.stat.exists == False) and (ansible_os_family == "Debian")
   tags:
    - mail
 
@@ -31,7 +29,7 @@
   apt:
     pkg={{ item }}
     state=installed
-  when: (postfix_exists | failed) and (ansible_os_family == "Debian")
+  when: (postfix_sbin_stat.stat.exists == False) and (ansible_os_family == "Debian")
   with_items: postfix_role.packages
   tags:
    - mail
@@ -40,7 +38,7 @@
   yum:
     pkg={{ item }}
     state=installed
-  when: (postfix_exists | failed) and (ansible_os_family == "RedHat")
+  when: (postfix_sbin_stat.stat.exists == False) and (ansible_os_family == "RedHat")
   with_items: postfix_role.packages
   tags:
    - mail

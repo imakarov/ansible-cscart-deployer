@@ -1,6 +1,6 @@
 ---
 
-- name: Apply configuration to all nodes
+- name: Common
   sudo: true
   hosts: all
   roles:
@@ -8,34 +8,35 @@
     - fail2ban
     - logrotate
 
-- name: Apply configuration to app nodes
+- name: Application
   sudo: true
   hosts: app
   roles:
+    - php/common
+    - php/mod_php
     - apache/common
-#    - php/mod_php
     - postfix
     - ftp
 
-# - name: Apply configuration to frontend nodes
-#   sudo: true
-#   hosts: fe
-#   roles:
-#     - nginx/proxy
+- name: Frontend
+  sudo: true
+  hosts: fe
+  roles:
+    - nginx/proxy
 
-- name: Apply configuration to database nodes
+- name: Databases
   sudo: true
   hosts: db
   roles:
     - mysql/common
 
-- name: Apply configuration to nosql nodes
+- name: NoSQL
   sudo: true
   hosts: nosql
   roles:
     - redis
 
-- name: Install CS-Cart store
+- name: Deploy store
   sudo: true
   hosts: app
   roles:

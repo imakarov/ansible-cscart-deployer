@@ -8,9 +8,11 @@
 User ${APACHE_RUN_USER}
 Group ${APACHE_RUN_GROUP}
 
+Listen 127.0.0.1:8080
+
 ################################################################################
 
-LockFile ${APACHE_LOCK_DIR}/accept.lock
+# LockFile ${APACHE_LOCK_DIR}/accept.lock
 PidFile ${APACHE_PID_FILE}
 
 ################################################################################
@@ -67,6 +69,44 @@ HostnameLookups Off
 
 ################################################################################
 
+<IfModule mod_negotiation.c>
+<IfModule mod_include.c>
+
+    Alias /http-errors/ "{{ apache_role.path }}/html/"
+
+    <Directory "{{ apache_role.path }}/html/">
+        AllowOverride None
+        Options IncludesNoExec
+        AddOutputFilter Includes html
+        AddHandler type-map var
+        Order allow,deny
+        Allow from all
+        LanguagePriority en es de fr
+        ForceLanguagePriority Prefer Fallback
+    </Directory>
+
+    ErrorDocument 400 /http-errors/401.html
+    ErrorDocument 401 /http-errors/401.html
+    ErrorDocument 403 /http-errors/403.html
+    ErrorDocument 404 /http-errors/404.html
+    ErrorDocument 405 /http-errors/401.html
+    ErrorDocument 408 /http-errors/401.html
+    ErrorDocument 410 /http-errors/401.html
+    ErrorDocument 411 /http-errors/401.html
+    ErrorDocument 412 /http-errors/401.html
+    ErrorDocument 413 /http-errors/401.html
+    ErrorDocument 414 /http-errors/401.html
+    ErrorDocument 415 /http-errors/401.html
+    ErrorDocument 500 /http-errors/50X.html
+    ErrorDocument 501 /http-errors/50X.html
+    ErrorDocument 502 /http-errors/502.html
+    ErrorDocument 503 /http-errors/50X.html
+    ErrorDocument 504 /http-errors/50X.html
+</IfModule>
+</IfModule>
+
+################################################################################
+
 ErrorLog ${APACHE_LOG_DIR}/error.log
 LogLevel warn
 
@@ -78,10 +118,12 @@ LogFormat "%{User-agent}i" agent
 
 ################################################################################
 
+ServerName localhost
+
+################################################################################
+
 Include mods-enabled/*.load
-Include mods-enabled/*.conf
-Include ports.conf
-Include conf.d/
-Include vhosts.d/
+Include conf-enabled/*.conf
+Include sites-enabled/*.conf
 
 ################################################################################

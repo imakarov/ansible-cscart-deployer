@@ -1,20 +1,22 @@
-- name: load configurations
-  template: src={{ item.src }}.j2 dest=/etc/nginx/{{ item.dest }}
+- name: load configs
+  template: src={{ item }}.j2 dest=/etc/nginx/{{ item }}
   with_items:
-    - { src: "fastcgi.conf", dest: "fastcgi.conf" }
-    - { src: "fastcgi_secure.conf", dest: "fastcgi_secure.conf" }
-    - { src: "conf-available/upstream.conf", dest: "conf-available/upstream.conf" }
+    - "conf-available/upstream.conf"
+    - "xtra/fastcgi_params.conf"
+    - "xtra/fastcgi_params_ssl.conf"
   tags:
     - nginx
 
-- name: enable configurations
-  file: src=/etc/nginx/{{ item.src }} dest=/etc/nginx/{{ item.dest }} state=link
+- name: enable configs
+  file:
+    src=/etc/nginx/conf-available/{{ item.src }}
+    dest=/etc/nginx/conf-enabled/{{ item.dest }} state=link
   with_items:
-    - { src: "conf-available/upstream.conf", dest: "conf-enabled/upstream.conf" }
+    - "upstream.conf"
   tags:
     - nginx
 
-- name: load virtual hosts
+- name: load vhosts
   template:
     src=sites-available/default.conf.j2
     dest=/etc/nginx/sites-available/{{ item.key }}.conf
@@ -22,7 +24,7 @@
   tags:
     - nginx
 
-- name: enable virtual hosts
+- name: enable vhosts
   file:
     src=/etc/nginx/sites-available/{{ item.key }}.conf
     dest=/etc/nginx/sites-enabled/{{ item.key }}.conf
@@ -31,7 +33,7 @@
   tags:
     - nginx
 
-- name: restart NGINX
+- name: restart service
   command: service {{ nginx_role.service }} restart
   tags:
     - nginx

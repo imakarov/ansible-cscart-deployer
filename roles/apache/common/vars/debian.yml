@@ -4,3 +4,4 @@ apache_role:
   rundir: "/var/run"
   path: "/etc/apache2"
   log: "/var/log/apache2"
+  moddir: "/usr/lib/apache2"
