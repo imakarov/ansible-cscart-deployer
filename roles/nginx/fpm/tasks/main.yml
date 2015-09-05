@@ -9,8 +9,9 @@
 
 - name: enable configs
   file:
-    src=/etc/nginx/conf-available/{{ item.src }}
-    dest=/etc/nginx/conf-enabled/{{ item.dest }} state=link
+    src=/etc/nginx/conf-available/{{ item }}
+    dest=/etc/nginx/conf-enabled/{{ item }}
+    state=link
   with_items:
     - "upstream.conf"
   tags:

@@ -32,6 +32,11 @@ server {
 
     ############################################################################
 
+    include xtra/error-40X.conf;
+    include xtra/error-50X.conf;
+
+    ############################################################################
+
     location / {
         proxy_pass http://backend;
         include xtra/proxy_params.conf;

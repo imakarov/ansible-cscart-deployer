@@ -4,14 +4,17 @@
   sudo: true
   hosts: all
   roles:
+    - common
     - fail2ban
-    - logrotate
+    - logrotate/common
 
-- name: Apply configuration to app nodes
+- name: Application
   sudo: true
   hosts: app
   roles:
+    - deploy
     - php/fpm
+    - pma
     - postfix
     - ftp
 

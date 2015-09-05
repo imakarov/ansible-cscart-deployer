@@ -1,7 +1,7 @@
 ---
 
 - name: Cleanup destination folder
-  file: path={{ item.value.cart.root }} state=absent
+  file: path={{ stores_dir }}/{{ item.key }} state=absent
   when: (item.value.cart.dist is defined)
   ignore_errors: true
   with_dict: stores
@@ -10,18 +10,21 @@
 
 - name: create projects directories
   file:
-    path={{ item.value.cart.root }}
+    path={{ stores_dir }}/{{ item.key }}
     state=directory
+    owner={{ deploy.user }}
+    group={{ deploy.group }}
     mode=755
   ignore_errors: true
   with_dict: stores
   tags:
+    - apache
     - nginx
     - php
     - cscart
 
 - name: copy repository and unpack archive
-  unarchive: src={{ item.value.cart.dist }} dest={{ item.value.cart.root }} copy=no
+  unarchive: src={{ item.value.cart.dist }} dest={{ stores_dir }}/{{ item.key }} copy=no
   when: (item.value.cart.dist is defined)
   with_dict: stores
   tags:

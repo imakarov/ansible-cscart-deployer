@@ -1,13 +1,11 @@
 {
+    "stores_dir": "/srv/projects",
     "stores": {
         "example.com": {
-
             "cart": {
-                "root": "/var/www/html/example.com",
                 "storefronts": ["example.org", "example.ru"],
                 "adminpanel": "admin.php"
             },
-
             "database": {
                 "name": "example",
                 "user": "example",

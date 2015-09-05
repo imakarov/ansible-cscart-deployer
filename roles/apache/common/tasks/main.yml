@@ -38,6 +38,26 @@
   tags:
     - apache
 
+- name: stop service
+  service:
+    name={{ apache_role.service }}
+    state=stopped
+  ignore_errors: True
+  tags:
+    - apache
+
+- name: create log directories
+  file:
+    path={{ apache_role.logdir }}/{{ item.key }}
+    mode=0755
+    owner={{ apache.user }}
+    group={{ apache.group }}
+    state=directory
+    recurse=yes
+  with_dict: stores
+  tags:
+    - apache
+
 - name: link modules directory
   file:
     src={{ apache_role.moddir }}/modules
@@ -53,6 +73,7 @@
   with_items:
     - "html"
     - "conf.d"
+    - "conf.modules.d"
     - "conf-enabled"
     - "sites-enabled"
     - "mods-enabled"
@@ -127,28 +148,29 @@
   tags:
     - apache
 
-# - name: enable configurations
-#   file:
-#     src={{ apache_role.path }}/conf-available/{{ item.key }}.conf
-#     dest={{ apache_role.path }}/conf-enabled/{{ item.key }}.conf
-#     state=link
-#   with_items:
-#     - foo
-#     - bar
-#   tags:
-#     - apache
-
 - name: load main configs
   template:
     src={{ item }}.j2
-    dest={{ apache_role.path }}/conf/{{ item }}
+    dest={{ apache_role.path }}/conf/httpd.conf
   with_items:
-    - "httpd.conf"
+    - "apache2.conf"
   when: (ansible_os_family == "RedHat")
   tags:
     - apache
 
-- name: load extra configurations
+- name: load environment variables
+  template:
+    src={{ item }}.j2
+    dest={{ apache_role.path }}/{{ item }}
+  with_items:
+    [
+      "envvars"
+    ]
+  when: (ansible_os_family == "Debian")
+  tags:
+    - apache
+
+- name: load magic
   template:
     src={{ item }}.j2
     dest={{ apache_role.path }}/{{ item }}
@@ -156,7 +178,6 @@
     [
       "magic"
     ]
-  when: (ansible_os_family == "RedHat")
   tags:
     - apache
 
@@ -186,16 +207,15 @@
   tags:
     - apache
 
-# - name: enable default modules
-#   command: "a2enmod {{ item }}"
-#   with_items:
-#     [
-#       "rewrite",
-#       "headers",
-#       "expires"
-#     ]
-#   tags:
-#     - apache
+- name: set up logrotate
+  template:
+    src=apache2.logrotate.j2
+    dest=/etc/logrotate.d/{{ apache_role.service }}
+    mode=644
+    owner=root
+    group=root
+  tags:
+    - apache
 
 - name: set permissions on /var/lock/apache2
   file:

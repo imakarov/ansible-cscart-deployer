@@ -1,7 +1,7 @@
 - name: install CS-Cart
   shell: /usr/bin/env php index.php
   args:
-    chdir: "{{ item.value.cart.root }}/install"
+    chdir: "{{ stores_dir }}/{{ item.key }}/install"
   when: (item.value.cart.dist is defined)
   with_dict: stores
   tags:
@@ -10,14 +10,17 @@
 - name: copy local_conf.php
   template:
     src=local_conf.php.j2
-    dest={{ item.value.cart.root }}/local_conf.php
+    dest={{ stores_dir }}/{{ item.key }}/local_conf.php
+    owner={{ deploy.user }}
+    group={{ deploy.group }}
+    mode=644
   with_dict: stores
   tags:
     - cscart
 
 - name: set permissions
   file:
-    path={{ stores[item[0]]['cart']['root'] }}/{{ item[1].path }}
+    path={{ stores_dir }}/{{ item[0].key }}/{{ item[1].path }}
     mode={{ item[1].mode }}
   when: (stores[item[0]]['cart']['dist'] is defined)
   with_nested:

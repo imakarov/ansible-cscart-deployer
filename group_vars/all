@@ -1,0 +1,11 @@
+deploy:
+  user: deploy
+  group: service
+
+service:
+  user: service
+  group: service
+
+sysadmin:
+  user: sysadmin
+  group: service

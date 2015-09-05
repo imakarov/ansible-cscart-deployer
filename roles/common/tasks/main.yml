@@ -43,3 +43,51 @@
   when: ansible_os_family == "RedHat"
   tags:
     - common
+
+- name: create custom groups
+  group:
+    name={{ item }}
+    state=present
+    system=yes
+  with_items:
+    - "{{ service.group }}"
+    - "{{ deploy.group }}"
+    - "developers"
+    - "sysadmins"
+  tags:
+    - common
+
+- name: create service user
+  user:
+    name={{ service.user }}
+    group={{ service.group }}
+    state=present
+    createhome=no
+    system=yes
+  tags:
+    - common
+
+- name: create deploy user
+  user:
+    name={{ item.name }}
+    group={{ item.group }}
+    home={{ item.home }}
+    groups={{ item.groups }}
+    shell=/bin/bash
+    state=present
+    createhome=no
+  with_items:
+    - { name: "{{ deploy.user }}", group: "{{ deploy.group }}", home: "{{ stores_dir }}", groups: "developers" }
+    - { name: "{{ sysadmin.user }}", group: "{{ sysadmin.group }}", home: "/home/{{ sysadmin.user }}", groups: "sysadmins" }
+  tags:
+    - common
+
+- name: copy sudoers extra
+  template:
+    src=etc/sudoers.d/security.j2
+    dest=/etc/sudoers.d/00-security
+    mode=440
+    owner=root
+    group=root
+  tags:
+    - common

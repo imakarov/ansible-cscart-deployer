@@ -2,8 +2,8 @@ apache:
   host: 127.0.0.1
   port: 8080
   flavor: "prefork"
-  user: "www-data"
-  group: "www-data"
+  user: "{{ service.user }}"
+  group: "{{ service.group }}"
   root: "/var/www/html"
   stub: "/var/www/empty"
   modules:
@@ -22,6 +22,7 @@ apache:
     - "expires.load"
     - "filter.load"
     - "headers.load"
+    - "log_config.load"
     - "mime.load"
     - "mpm_prefork.load"
     - "negotiation.load"
@@ -29,6 +30,8 @@ apache:
     - "rewrite.load"
     - "setenvif.load"
     - "status.load"
+    - "systemd.load"
+    - "unixd.load"
   configs:
     - "status.conf"
     - "setenvif.conf"
@@ -38,3 +41,5 @@ apache:
     - "dir.conf"
     - "deflate.conf"
     - "php5.conf"
+    - "htaccess.conf"
+    - "logging.conf"

@@ -98,3 +98,10 @@
   command: service {{ mysql_role.service }} restart
   tags:
     - mysql
+
+- name: enable autoload
+  service:
+    name={{ mysql_role.service }}
+    enabled=yes
+  tags:
+    - mysql

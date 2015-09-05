@@ -1,7 +1,7 @@
 nginx_role:
   logdir: "/var/log/nginx"
-  owner: "nginx"
-  group: "nginx"
+  owner: "{{ service.user }}"
+  group: "{{ service.group }}"
   service: nginx
   packages:
     - nginx

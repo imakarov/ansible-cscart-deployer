@@ -3,7 +3,7 @@
 - name: load config.php
   template:
     src=config.php.j2
-    dest={{ item.value.cart.root }}/install/config.php
+    dest={{ stores_dir }}/{{ item.key }}/install/config.php
   when: (item.value.cart.dist is defined)
   with_dict: stores
   tags:

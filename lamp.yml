@@ -6,15 +6,15 @@
   roles:
     - common
     - fail2ban
-    - logrotate
+    - logrotate/common
 
 - name: Application
   sudo: true
   hosts: app
   roles:
-    - php/common
-    - php/mod_php
+    - deploy
     - apache/common
+    - pma
     - postfix
     - ftp
 

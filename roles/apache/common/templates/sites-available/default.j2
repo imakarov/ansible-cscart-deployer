@@ -21,20 +21,20 @@
 
     ############################################################################
 
-    CustomLog {{ apache_role.log }}/access.log combined
-    ErrorLog  {{ apache_role.log }}/error.log
+    CustomLog {{ apache_role.logdir }}/{{ item.key }}/access.log combined
+    ErrorLog  {{ apache_role.logdir }}/{{ item.key }}/error.log
     LogLevel  warn
 
     ############################################################################
 
-    DocumentRoot {{ item.value.cart.root }}
+    DocumentRoot {{ stores_dir }}/{{ item.key }}
 
     <Directory />
         Options -Indexes +MultiViews +FollowSymlinks +SymLinksIfOwnerMatch +IncludesNoExec
         AllowOverride All
     </Directory>
 
-    <Directory {{ item.value.cart.root }}>
+    <Directory {{ stores_dir }}/{{ item.key }}>
         Options -Indexes +MultiViews +FollowSymlinks +SymLinksIfOwnerMatch +IncludesNoExec
         AllowOverride All
         Order allow,deny
@@ -54,20 +54,6 @@
         Deny from all
         Satisfy All
     </Directory>
-
-    ############################################################################
-
-    <IfModule mod_deflate.c>
-        AddOutputFilterByType DEFLATE text/plain
-        AddOutputFilterByType DEFLATE text/html
-        AddOutputFilterByType DEFLATE text/xml
-        AddOutputFilterByType DEFLATE text/css
-        AddOutputFilterByType DEFLATE application/xml
-        AddOutputFilterByType DEFLATE application/xhtml+xml
-        AddOutputFilterByType DEFLATE application/rss+xml
-        AddOutputFilterByType DEFLATE application/javascript
-        AddOutputFilterByType DEFLATE application/x-javascript
-    </IfModule>
 
     ############################################################################
 

@@ -9,8 +9,10 @@
   StartServers              {{ ansible_processor_vcpus * 2 }};
   MinSpareServers           {{ ansible_processor_vcpus * 2 }};
   MaxSpareServers           {{ ansible_processor_vcpus * 4 }};
+{% if ansible_distribution == "Ubuntu" %}
   MaxRequestWorkers         {{ ansible_processor_vcpus * 150 }};
   MaxConnectionsPerChild    0
+{% endif %}
 </IfModule>
 
 # vim: syntax=apache ts=4 sw=4 sts=4 sr noet

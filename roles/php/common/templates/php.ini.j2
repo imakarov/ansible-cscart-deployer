@@ -1,6 +1,6 @@
 [PHP]
 engine = On
-short_open_tag = Off
+short_open_tag = On
 asp_tags = Off
 precision = 14
 output_buffering = 4096
@@ -14,6 +14,7 @@ zend.enable_gc = On
 expose_php = On
 max_execution_time = {{ php.general.max_execution_time|default('30') }}
 max_input_time = {{ php.general.max_input_time|default('60') }}
+max_input_vars = 10240
 memory_limit = {{ php.general.memory_limit|default('256M') }}
 error_reporting = {{ php.general.error_reporting|default('E_ALL') }}
 display_errors = {{ php.general.display_errors|default('Off') }}
@@ -41,7 +42,7 @@ upload_max_filesize = {{ php.general.upload_max_filesize|default('32M') }}
 max_file_uploads = 20
 allow_url_fopen = On
 allow_url_include = Off
-default_socket_timeout = 60
+default_socket_timeout = 300
 [CLI Server]
 cli_server.color = On
 [Date]
@@ -88,7 +89,7 @@ mysql.default_socket =
 mysql.default_host =
 mysql.default_user =
 mysql.default_password =
-mysql.connect_timeout = 60
+mysql.connect_timeout = 300
 mysql.trace_mode = Off
 [MySQLi]
 mysqli.max_persistent = -1

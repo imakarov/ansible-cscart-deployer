@@ -17,6 +17,6 @@ php:
 php_pool:
   www:
     listen: "127.0.0.1:9000"
-    owner: "cartdeploy"
-    group: "cartdeploy"
+    owner: "{{ service.user }}"
+    group: "{{ service.group }}"
     memory_limit: 128M

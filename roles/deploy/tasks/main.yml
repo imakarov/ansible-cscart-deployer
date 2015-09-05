@@ -1,6 +1,16 @@
+- name: set permission
+  file:
+    path={{ stores_dir }}
+    state=directory
+    mode=555
+    owner={{ deploy.user }}
+    group={{ deploy.group }}
+  tags:
+    - common
+
 - name: create project directories
   file:
-    path={{ item.value.cart.root }}
+    path={{ stores_dir }}/{{ item.key }}
     state=directory
     mode=755
     owner=root

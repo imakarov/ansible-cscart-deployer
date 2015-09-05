@@ -6,5 +6,5 @@ hhvm_role:
   logdir: "/var/log/hhvm"
   host: "127.0.0.1"
   port: "9000"
-  owner: "hhvm"
-  group: "hhvm"
+  owner: "service"
+  group: "service"
