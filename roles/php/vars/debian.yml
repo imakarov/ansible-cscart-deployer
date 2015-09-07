@@ -9,6 +9,7 @@ php_role:
     packages:
       - "php5-redis"
       - "php5-apcu"
+      - "php5-imagick"
   fpm:
     logdir: "/var/log/php5-fpm"
     owner: "www-data"
